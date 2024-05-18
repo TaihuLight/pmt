@@ -267,7 +267,7 @@ class Board:
         boards_infos = []
         dev_list = self.eeprom.list_eeprom_devices()
         for ind in range(len(dev_list)):
-            type, desc = self.eeprom.detect_type(dev_list[ind])
+            type, desc = self.eeprom.detect_type(ind, dev_list[ind])
             if type == 1:  # i2c eeprom
                 for pins in common.board_eeprom_i2c:
                     self.eeprom.init_system(desc, ind)
@@ -576,7 +576,7 @@ class Board:
         out_pins = 0
         logging.info("FTDI Initialization...")
         dev_list = self.eeprom.list_eeprom_devices()
-        __, desc = self.eeprom.detect_type(dev_list[self.id])
+        __, desc = self.eeprom.detect_type(self.id, dev_list[self.id])
         self.ftdic = common_func.ftdi_open(self.id, channel, desc)
         if mode == 0:  # if GPIO mode
             for (
@@ -770,7 +770,7 @@ class Board:
             self.setgpio(gpio, gpio_value * 0xFF)
             if gpio.get("pca6416"):
                 check_value = self.pca6416_get_output(gpio)
-                gpio_mask = gpio["adp5585"][2]
+                gpio_mask = gpio["pca6416"][2]
             else:  # adp5585
                 check_value = self.adp5585_get_output(gpio)
                 gpio_mask = gpio["adp5585"][2]
